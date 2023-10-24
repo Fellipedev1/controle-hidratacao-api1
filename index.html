@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Hidratação</title>
+</head>
+
+<body>
+    <h1>Controle de Hidratação</h1>
+    
+    <label for="usuario">Usuário:</label>
+    <input type="text" id="usuario" name="usuario" required><br><br>
+    
+    <label for="quantidadeAgua">Quantidade de Água (ml):</label>
+    <input type="number" id="quantidadeAgua" name="quantidadeAgua" required><br><br>
+    
+    <label for="data">Data:</label>
+    <input type="datetime-local" id="data" name="data" required><br><br>
+    
+    <button onclick="adicionarRegistro()">Adicionar Registro</button>
+    
+    <script>
+        function adicionarRegistro() {
+            const usuario = document.getElementById("usuario").value;
+            const quantidadeAgua = document.getElementById("quantidadeAgua").value;
+            const data = document.getElementById("data").value;
+
+            const novoRegistro = {
+                usuario: usuario,
+                quantidade_agua_ml: quantidadeAgua,
+                data: data
+            };
+
+            fetch('http://172.16.31.43:3000/registros', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(novoRegistro)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Registro adicionado:', data);
+                // Aqui você pode adicionar lógica para atualizar a interface do usuário ou fazer outras ações após adicionar um registro
+            })
+            .catch(error => {
+                console.error('Erro ao adicionar registro:', error);
+            });
+        }
+    </script>
+</body>
+
+</html>
