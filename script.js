@@ -42,6 +42,13 @@ function limparCamposDeEntrada() {
 
 function pesquisarHidratacao() {
     const usuario = document.getElementById("usuario").value;
+    
+    // Verifica se o campo de usuário está vazio
+    if (!usuario) {
+        alert("Por favor, insira um nome de usuário antes de pesquisar.");
+        return;
+    }
+
     fetch(`http://192.168.15.9:3000/registros?usuario=${usuario}`)
         .then(response => response.json())
         .then(data => {
