@@ -1,6 +1,8 @@
+
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const port = 3000; // Porta alterada para 3000
 
 app.use(express.json());
 app.use(cors());
@@ -17,4 +19,7 @@ app.post('/registros', (req, res) => {
   res.json(novoRegistro);
 });
 
-module.exports = app;
+const ipAddress = '172.16.31.43'; // Você pode deixar assim para escutar em todas as interfaces de rede
+app.listen(port, ipAddress, () => {
+  console.log(`Servidor rodando na porta ${port} e no endereço IP ${ipAddress}`);
+});
