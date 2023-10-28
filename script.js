@@ -1,15 +1,17 @@
 function adicionarRegistro() {
     const usuario = document.getElementById("usuario").value;
     const quantidadeAgua = document.getElementById("quantidadeAgua").value;
-    const data = document.getElementById("data").value;
+
+    // Cria um novo objeto de data no momento da chamada da função com o fuso horário do Brasil
+    const dataAtual = new Date().toLocaleString("pt-BR");
 
     const novoRegistro = {
         usuario: usuario,
         quantidade_agua_ml: quantidadeAgua,
-        data: data
+        data: dataAtual // Envia a data e a hora do sistema no fuso horário do Brasil para a API
     };
 
-    fetch('http://172.16.31.43:3000/registros', {
+    fetch('http://192.168.15.9:3000/registros', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -28,28 +30,26 @@ function adicionarRegistro() {
 }
 
 function exibirRegistroNaTela(registro) {
-    // Exibe os detalhes do registro em um alerta
-    alert(`Registro adicionado:\nUsuário: ${registro.usuario}\nQuantidade de água: ${registro.quantidade_agua_ml} ml\nData: ${registro.data}`);
+    // Exibe apenas o nome do usuário e a quantidade de água no alerta para o usuário
+    alert(`Registro adicionado:\nUsuário: ${registro.usuario}\nQuantidade de água: ${registro.quantidade_agua_ml} ml`);
 }
 
 function limparCamposDeEntrada() {
     // Limpa os valores dos campos de entrada
     document.getElementById("usuario").value = '';
     document.getElementById("quantidadeAgua").value = '';
-    document.getElementById("data").value = '';
 }
-
 
 function pesquisarHidratacao() {
     const usuario = document.getElementById("usuario").value;
-    
+
     // Verifica se o campo de usuário está vazio
     if (!usuario) {
         alert("Por favor, insira um nome de usuário antes de pesquisar.");
         return;
     }
 
-    fetch(`http://172.16.31.43:3000/registros?usuario=${usuario}`)
+    fetch(`http://192.168.15.9:3000/registros?usuario=${usuario}`)
         .then(response => response.json())
         .then(data => {
             const totalHidratacao = data.reduce((total, registro) => total + parseInt(registro.quantidade_agua_ml), 0);

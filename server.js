@@ -19,7 +19,7 @@ app.post('/registros', (req, res) => {
   res.json(novoRegistro);
 });
 
-const ipAddress = '172.16.31.43'; // Você pode deixar assim para escutar em todas as interfaces de rede
+const ipAddress = '192.168.15.9'; // Você pode deixar assim para escutar em todas as interfaces de rede
 app.listen(port, ipAddress, () => {
   console.log(`Servidor rodando na porta ${port} e no endereço IP ${ipAddress}`);
 });
