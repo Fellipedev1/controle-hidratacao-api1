@@ -11,7 +11,7 @@ function adicionarRegistro() {
         data: dataAtual // Envia a data e a hora do sistema no fuso horário do Brasil para a API
     };
 
-    fetch('http://192.168.15.9:3000/registros', {
+    fetch('http://192.168.0.101:3000/registros', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -42,6 +42,7 @@ function limparCamposDeEntrada() {
 
 function pesquisarHidratacao() {
     const usuario = document.getElementById("usuario").value;
+    const resultadoElement = document.getElementById("resultado");
 
     // Verifica se o campo de usuário está vazio
     if (!usuario) {
@@ -49,13 +50,39 @@ function pesquisarHidratacao() {
         return;
     }
 
-    fetch(`http://192.168.15.9:3000/registros?usuario=${usuario}`)
+    // Função para gerar uma cor hexadecimal aleatória
+    function getRandomColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    // Atualiza a cor do elemento a cada 10 segundos
+    const colorChangingInterval = setInterval(() => {
+        resultadoElement.style.color = getRandomColor();
+    }, 10000); // 10000 milissegundos = 10 segundos
+
+    // Faz a requisição para a API
+    fetch(`http://192.168.0.101:3000/registros?usuario=${usuario}`)
         .then(response => response.json())
         .then(data => {
+            clearInterval(colorChangingInterval); // Para a animação de mudança de cor
             const totalHidratacao = data.reduce((total, registro) => total + parseInt(registro.quantidade_agua_ml), 0);
-            document.getElementById("resultado").innerText = `Total de água consumida por ${usuario}: ${totalHidratacao} ml`;
+            resultadoElement.style.color = "#000000"; // Restaura a cor original
+            resultadoElement.innerText = `Total de água consumida por ${usuario}: ${totalHidratacao} ml`;
+
+            // Verifica se a pessoa cumpriu a meta diária de 3 litros (3000 ml)
+            if (totalHidratacao < 3000) {
+                resultadoElement.innerText += "\nVocê ainda não cumpriu sua meta diária.";
+            } else {
+                resultadoElement.innerText += "\nParabéns! Você atingiu sua meta diária!";
+            }
         })
         .catch(error => {
             console.error('Erro ao pesquisar hidratação:', error);
         });
 }
+

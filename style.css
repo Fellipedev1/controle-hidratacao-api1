@@ -1,8 +1,9 @@
-
 body {
+
     font-family: Arial, sans-serif;
     text-align: center;
     margin: 50px;
+    background-color: azure;
 }
 
 .container {
@@ -35,4 +36,11 @@ button:hover {
 .result {
     margin-top: 20px;
     font-weight: bold;
+}
+
+.imag {
+    position: absolute;
+    left: 30px;
+    top: 100px;
+
 }
