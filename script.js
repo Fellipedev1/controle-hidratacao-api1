@@ -11,7 +11,7 @@ function adicionarRegistro() {
         data: dataAtual // Envia a data e a hora do sistema no fuso horário do Brasil para a API
     };
 
-    fetch('http://192.168.0.101:3000/registros', {
+    fetch('https://server1-7xoj.onrender.com/registros', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -30,8 +30,8 @@ function adicionarRegistro() {
 }
 
 function exibirRegistroNaTela(registro) {
-    // Exibe apenas o nome do usuário e a quantidade de água no alerta para o usuário
-    alert(`Registro adicionado:\nUsuário: ${registro.usuario}\nQuantidade de água: ${registro.quantidade_agua_ml} ml`);
+    const resultadoElement = document.getElementById("resultado");
+    resultadoElement.innerText = `Registro adicionado:\nUsuário: ${registro.usuario}\nQuantidade de água: ${registro.quantidade_agua_ml} ml`;
 }
 
 function limparCamposDeEntrada() {
@@ -50,39 +50,33 @@ function pesquisarHidratacao() {
         return;
     }
 
-    // Função para gerar uma cor hexadecimal aleatória
-    function getRandomColor() {
-        const letters = "0123456789ABCDEF";
-        let color = "#";
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
+    // Faz a requisição para a API passando o nome do usuário como parâmetro de consulta
+    fetch(`https://server1-7xoj.onrender.com/registros?usuario=${usuario}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
         }
-        return color;
-    }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Filtra os registros apenas para o usuário específico
+        const registrosDoUsuario = data.filter(registro => registro.usuario.toLowerCase() === usuario.toLowerCase());
 
-    // Atualiza a cor do elemento a cada 10 segundos
-    const colorChangingInterval = setInterval(() => {
-        resultadoElement.style.color = getRandomColor();
-    }, 10000); // 10000 milissegundos = 10 segundos
+        // Calcula o total de água consumida pelo usuário específico
+        const totalHidratacao = registrosDoUsuario.reduce((total, registro) => total + parseInt(registro.quantidade_agua_ml), 0);
+        
+        // Exibe o resultado na tela
+        resultadoElement.innerText = `Total de água consumida por ${usuario}: ${totalHidratacao} ml`;
 
-    // Faz a requisição para a API
-    fetch(`http://192.168.0.101:3000/registros?usuario=${usuario}`)
-        .then(response => response.json())
-        .then(data => {
-            clearInterval(colorChangingInterval); // Para a animação de mudança de cor
-            const totalHidratacao = data.reduce((total, registro) => total + parseInt(registro.quantidade_agua_ml), 0);
-            resultadoElement.style.color = "#000000"; // Restaura a cor original
-            resultadoElement.innerText = `Total de água consumida por ${usuario}: ${totalHidratacao} ml`;
-
-            // Verifica se a pessoa cumpriu a meta diária de 3 litros (3000 ml)
-            if (totalHidratacao < 3000) {
-                resultadoElement.innerText += "\nVocê ainda não cumpriu sua meta diária.";
-            } else {
-                resultadoElement.innerText += "\nParabéns! Você atingiu sua meta diária!";
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao pesquisar hidratação:', error);
-        });
+        // Verifica se o usuário atingiu a meta diária de 3 litros (3000 ml)
+        if (totalHidratacao >= 3000) {
+            resultadoElement.innerText += "\nParabéns! Você atingiu sua meta diária!";
+        } else {
+            resultadoElement.innerText += "\nVocê ainda não atingiu sua meta diária.";
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao pesquisar hidratação:', error);
+    });
 }
 
