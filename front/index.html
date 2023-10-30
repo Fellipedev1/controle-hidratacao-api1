@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Hidratação</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Controle de Hidratação </h1>
+
+        <label for="usuario">Usuário:</label>
+        <input type="text" id="usuario" name="usuario" required><br><br>
+
+        <label for="quantidadeAgua">Quantidade de Água (ml):</label>
+        <input type="number" id="quantidadeAgua" name="quantidadeAgua" required><br><br>
+
+      
+
+        <button onclick="adicionarRegistro()">Adicionar Registro</button>
+        <button onclick="pesquisarHidratacao()">Pesquisar Hidratação</button>
+
+        <div class="result" id="resultado"></div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>
