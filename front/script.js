@@ -1,3 +1,4 @@
+
 function adicionarRegistro() {
     const usuario = document.getElementById("usuario").value;
     const quantidadeAgua = document.getElementById("quantidadeAgua").value;
@@ -79,4 +80,3 @@ function pesquisarHidratacao() {
         console.error('Erro ao pesquisar hidratação:', error);
     });
 }
-
